@@ -6,12 +6,12 @@
 
 --Create a new column to store the date in the desired format. 
 ALTER TABLE HousingData
-ADD COLUMN FechaCorregida Date;
+ADD FechaCorregida Date;
 
 
 -- Add the data to the new column:
 UPDATE HousingData
-SET FechaCorregida = CONVERT(Date,SaleDate)
+SET FechaCorregida = CONVERT(Date,SaleDate);
 
 
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ JOIN HousingData b
 	AND a.[UniqueID ] <> b.[UniqueID ]
 
 --Include only the rows with a NULL "ProperyAddress":
-WHERE a.PropertyAddress IS NULL
+WHERE a.PropertyAddress IS NULL;
 
 
 
@@ -62,18 +62,18 @@ Add PropertySplitCity Nvarchar(255);
 UPDATE HousingData
 --The "PropertySplitAddress" column is updated with a SUBSTRING of the "PropertyAddress" column.
 --The SUBSTRING starts at index 1 and ends at the index preceding the comma, which is obtained using "CHARINDEX(',', PropertyAddress) - 1.
-SET PropertySplitAddress = SUBSTRING(PropertyAddress, 1, CHARINDEX(',', PropertyAddress) -1 )
+SET PropertySplitAddress = SUBSTRING(PropertyAddress, 1, CHARINDEX(',', PropertyAddress) -1 );
 
 UPDATE HousingData
 --The "PropertySplitCity" column is updated with a SUBSTRING of the "PropertyAddress" column. 
 --The SUBSTRING starts at the index following the comma, obtained using "CHARINDEX(',', PropertyAddress) + 1,"
 -- and ends at the last index of the string, calculated by determining the length of the string with "LEN(PropertyAddress)."
-SET PropertySplitCity = SUBSTRING(PropertyAddress, CHARINDEX(',', PropertyAddress) + 1 , LEN(PropertyAddress))
+SET PropertySplitCity = SUBSTRING(PropertyAddress, CHARINDEX(',', PropertyAddress) + 1 , LEN(PropertyAddress));
 
 SELECT
 SUBSTRING(PropertyAddress, 1, CHARINDEX(',', PropertyAddress) -1 ) as Address
 , SUBSTRING(PropertyAddress, CHARINDEX(',', PropertyAddress) + 1 , LEN(PropertyAddress)) as City
-From HousingData
+From HousingData;
 
 ---------------------------------------------------------------------------------------------------------------------
 --4. 
@@ -91,7 +91,7 @@ Add OwnerSplitAddress Nvarchar(255);
 --Update the column
 UPDATE HousingData
 --PARSENAME returns the third part of the "OwnerAddress" object, corresponding to the address
-SET OwnerSplitAddress = PARSENAME(REPLACE(OwnerAddress, ',', '.') , 3)
+SET OwnerSplitAddress = PARSENAME(REPLACE(OwnerAddress, ',', '.') , 3);
 
 
 --Create the column for the cities
@@ -101,7 +101,7 @@ Add OwnerSplitCity Nvarchar(255);
 --Update the column 
 Update HousingData
 --PARSENAME returns the second part of the "OwnerAddress" object, corresponding to the city.
-SET OwnerSplitCity = PARSENAME(REPLACE(OwnerAddress, ',', '.') , 2)
+SET OwnerSplitCity = PARSENAME(REPLACE(OwnerAddress, ',', '.') , 2);
 
 
 --Create the column for the States 
@@ -111,7 +111,7 @@ Add OwnerSplitState Nvarchar(255);
 --Update the column
 Update HousingData
 --PARSENAME returns the second part of the "OwnerAddress" object, corresponding to the state.
-SET OwnerSplitState = PARSENAME(REPLACE(OwnerAddress, ',', '.') , 1)
+SET OwnerSplitState = PARSENAME(REPLACE(OwnerAddress, ',', '.') , 1);
 
 ---------------------------------------------------------------------------------------
 --5.With the following command, the goal is to standardize the "SoldAsVacant" column. 
@@ -122,7 +122,7 @@ Update HousingData
 SET SoldAsVacant = CASE When SoldAsVacant = 'Y' THEN 'Yes'
 	   When SoldAsVacant = 'N' THEN 'No'
 	   ELSE SoldAsVacant
-	   END
+	   END;
 
 --Make sure that only the values "Yes" and "No" exist after the update. 
 SELECT DISTINCT(SoldAsVacant) FROM HousingData; 
@@ -150,14 +150,14 @@ FROM HousingData
 )
 DELETE 
 FROM CTE
-WHERE row_num > 1 --Delete the rows whose value in the "row_num" column is greater than 1.
+WHERE row_num > 1; --Delete the rows whose value in the "row_num" column is greater than 1.
 
 
 -------------------------------------------------------------------------------------------
 --7. Remove those columns that are not relevant for the analysis.
 
 ALTER TABLE HousingData
-DROP COLUMN OwnerAddress, TaxDistrict, PropertyAddress, SaleDate
+DROP COLUMN OwnerAddress, TaxDistrict, PropertyAddress, SaleDate; 
 
 
 
